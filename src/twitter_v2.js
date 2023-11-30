@@ -16,15 +16,11 @@ const client = new Twitter({
 
 
 const func = async () => {
-    try {
-        const { data } = await client.get('tweets', { ids: '1582107509577302016' });
-        console.log(data);
-    } catch (error) {
-        console.log(error);
-    }
+    const { data } = await client.get('tweets', { ids: '1582107509577302016' });
+    return data;
 };
 
-func().then((d) =>{
-
+func().then((data) =>{
+    console.log(data);
 }).catch((e) => console.log(e))
 

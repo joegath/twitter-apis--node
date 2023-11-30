@@ -9,11 +9,7 @@ const twitterClient = new TwitterApi(TWITTER_ACCESS_TOKEN);
 
 
 const tweet = async (msg) => {
-    try {
-        await twitterClient.v2.tweet(msg);  // 'Hello!'
-    } catch (error) {
-        console.log(error);
-    }
+    await twitterClient.v2.tweet(msg);  // 'Hello!'
 };
 
 const tweetMsg = "reuse is happening at scale";
@@ -24,21 +20,12 @@ tweet(tweetMsg).then((d) => {
 });
 
 const userByUsername = async (username) => {
-    try {
-        const readOnlyClient = twitterClient.readOnly; // Tell typescript it's a readonly app
-        return await readOnlyClient.v2.userByUsername(username); //'plhery'
-    } catch (error) {
-        console.log(error);
-    }
+    const readOnlyClient = twitterClient.readOnly; // Tell typescript it's a readonly app
+    return await readOnlyClient.v2.userByUsername(username); //'plhery'
 };
 
 const uploadMedia = async (path) => {
-    try {
-
-        const readOnlyClient = twitterClient.readOnly;
-        return await readOnlyClient.v2.uploadMedia(path); //'./big-buck-bunny.mp4'
-    } catch (error) {
-        console.log(error);
-    }
+    const readOnlyClient = twitterClient.readOnly;
+    return await readOnlyClient.v2.uploadMedia(path); //'./big-buck-bunny.mp4'
 };
 
