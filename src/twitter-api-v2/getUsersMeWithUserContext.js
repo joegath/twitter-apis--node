@@ -10,6 +10,10 @@ const readline = rl.createInterface({
   output: process.stdout
 });
 
+const SETTINGS = {
+  useRequestTokenPin: false
+};
+
 // The code below sets the consumer key and consumer secret from your environment variables
 // To set environment variables on macOS or Linux, run the export commands below from the terminal:
 // export CONSUMER_KEY='YOUR-KEY'
@@ -30,7 +34,10 @@ const oAuthAccessToken = {
 // These are the parameters for the API request
 // specify Tweet IDs to fetch, and any additional fields that are required
 // by default, only the Tweet ID and text are returned
-const params = 'user.fields=created_at,description&expansions=pinned_tweet_id' // Edit optional query parameters here
+const userFieldsParams = "created_at,description,verified,location";
+const expansionsParams = "pinned_tweet_id";
+const tweetFieldsParams = "attachments,author_id,context_annotations,conversation_id,created_at,edit_controls,entities,geo,id,in_reply_to_user_id,lang,non_public_metrics,public_metrics,organic_metrics,possibly_sensitive,referenced_tweets,reply_settings,source,text,withheld";
+const params = `user.fields=${userFieldsParams}&expansions=${expansionsParams}&tweet.fields=${tweetFieldsParams}` // Edit optional query parameters here
 
 const endpointURL = `https://api.twitter.com/2/users/me?${params}`;
 
@@ -135,18 +142,19 @@ async function getRequest({
   try {
 
     /**
-    * Comment out the code below if you want to auto-post by making use of 
-    * the developer accont oAuthAccessToken
+    * Can request oAuthAccessToken and make use of pin flow
     */
-    // // Get request token
-    // const oAuthRequestToken = await requestToken();
-    // // Get authorization
-    // authorizeURL.searchParams.append('oauth_token', oAuthRequestToken.oauth_token);
-    // console.log('Please go here and authorize:', authorizeURL.href);
-    // const pin = await input('Paste the PIN here: ');
-    // // Get the access token
-    // const oAuthAccessToken = await accessToken(oAuthRequestToken, pin.trim());
-
+   if(SETTINGS.useRequestTokenPin) {
+    // Get request token
+    const oAuthRequestToken = await requestToken();
+    // Get authorization
+    authorizeURL.searchParams.append('oauth_token', oAuthRequestToken.oauth_token);
+    console.log('Please go here and authorize:', authorizeURL.href);
+    const pin = await input('Paste the PIN here: ');
+    // Get the access token
+    oAuthAccessToken = await accessToken(oAuthRequestToken, pin.trim());
+   }
+    
 
     // Make the request
     const response = await getRequest(oAuthAccessToken);

@@ -10,6 +10,10 @@ const readline = rl.createInterface({
   output: process.stdout
 });
 
+const SETTINGS = {
+  useRequestTokenPin: false
+};
+
 
 // The code below sets the consumer key and consumer secret from your environment variables
 // To set environment variables on macOS or Linux, run the export commands below from the terminal:
@@ -137,18 +141,18 @@ async function getRequest({
   try {
 
     /**
-    * Comment out the code below if you want to auto-post by making use of 
-    * the developer accont oAuthAccessToken
+    * Can request oAuthAccessToken and make use of pin flow
     */
-    // // Get request token
-    // const oAuthRequestToken = await requestToken();
-    // // Get authorization
-    // authorizeURL.searchParams.append('oauth_token', oAuthRequestToken.oauth_token);
-    // console.log('Please go here and authorize:', authorizeURL.href);
-    // const pin = await input('Paste the PIN here: ');
-    // // Get the access token
-    // const oAuthAccessToken = await accessToken(oAuthRequestToken, pin.trim());
-
+   if(SETTINGS.useRequestTokenPin) {
+    // Get request token
+    const oAuthRequestToken = await requestToken();
+    // Get authorization
+    authorizeURL.searchParams.append('oauth_token', oAuthRequestToken.oauth_token);
+    console.log('Please go here and authorize:', authorizeURL.href);
+    const pin = await input('Paste the PIN here: ');
+    // Get the access token
+    oAuthAccessToken = await accessToken(oAuthRequestToken, pin.trim());
+   }
 
     // Make the request
     const response = await getRequest(oAuthAccessToken);
@@ -162,6 +166,7 @@ async function getRequest({
   process.exit();
 })();
 
+
 /**
 node src/twitter-api-v2/postTweet.js
- */
+*/
