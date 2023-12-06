@@ -1,7 +1,6 @@
 
 /**
  * GET/2/users/me user.fields params
- * including promoted_metrics param in non-promoted tweets will make the call to throw errors
  */
 export const allUsersFieldsParams = "created_at,description,entities,id,location,most_recent_tweet_id,name,pinned_tweet_id,profile_image_url,protected,public_metrics,url,username,verified,verified_type,withheld";
 
