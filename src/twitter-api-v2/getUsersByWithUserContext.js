@@ -4,7 +4,12 @@ import OAuth from 'oauth-1.0a';
 import qs from 'querystring';
 import rl from 'readline';
 import {} from 'dotenv/config';
-import { sampleDetailedTweet } from '../utils/sampleDetailedTweet.js';
+
+
+/** NOTE
+ * Script threw error: "HTTPError: Response code 403 (Forbidden)" when used with a free account
+ */
+
 
 const readline = rl.createInterface({
   input: process.stdin,
@@ -14,7 +19,6 @@ const readline = rl.createInterface({
 const SETTINGS = {
   useRequestTokenPin: false
 };
-
 
 // The code below sets the consumer key and consumer secret from your environment variables
 // To set environment variables on macOS or Linux, run the export commands below from the terminal:
@@ -32,19 +36,15 @@ const oAuthAccessToken = {
   oauth_token_secret
 };
 
-// Be sure to add replace the text of the with the text you wish to Tweet.
-// You can also add parameters to post polls, quote Tweets, Tweet with reply settings, and Tweet to Super Followers in addition to other features.
-const data = {
-  "text": sampleDetailedTweet || "sample tweet"
-};
+const params = `usernames=X`
+const endpointURL = `https://api.twitter.com/2/users/by?${params}`;
 
-
-const endpointURL = `https://api.twitter.com/2/tweets`;
 
 // this example uses PIN-based OAuth to authorize the user
-const requestTokenURL = 'https://api.twitter.com/oauth/request_token?oauth_callback=oob&x_auth_access_type=write';
+const requestTokenURL = 'https://api.twitter.com/oauth/request_token?oauth_callback=oob';
 const authorizeURL = new URL('https://api.twitter.com/oauth/authorize');
 const accessTokenURL = 'https://api.twitter.com/oauth/access_token';
+
 const oauth = OAuth({
   consumer: {
     key: consumer_key,
@@ -64,6 +64,7 @@ async function input(prompt) {
 }
 
 async function requestToken() {
+
   const authHeader = oauth.toHeader(oauth.authorize({
     url: requestTokenURL,
     method: 'POST'
@@ -80,31 +81,32 @@ async function requestToken() {
   } else {
     throw new Error('Cannot get an OAuth request token');
   }
-  
 }
-
 
 async function accessToken({
   oauth_token,
   oauth_token_secret
 }, verifier) {
+
   const authHeader = oauth.toHeader(oauth.authorize({
     url: accessTokenURL,
     method: 'POST'
   }));
+
   const path = `https://api.twitter.com/oauth/access_token?oauth_verifier=${verifier}&oauth_token=${oauth_token}`
+
   const req = await got.post(path, {
     headers: {
       Authorization: authHeader["Authorization"]
     }
   });
+
   if (req.body) {
     return qs.parse(req.body);
   } else {
     throw new Error('Cannot get an OAuth request token');
   }
 }
-
 
 async function getRequest({
   oauth_token,
@@ -118,32 +120,25 @@ async function getRequest({
 
   const authHeader = oauth.toHeader(oauth.authorize({
     url: endpointURL,
-    method: 'POST'
+    method: 'GET'
   }, token));
 
-  const req = await got.post(endpointURL, {
-    json: data,
-    responseType: 'json',
+  const req = await got(endpointURL, {
     headers: {
       Authorization: authHeader["Authorization"],
-      'user-agent': "v2CreateTweetJS",
-      'content-type': "application/json",
-      'accept': "application/json"
+      'user-agent': "v2UserLookupJS"
     }
   });
+
   if (req.body) {
-    return req.body;
+    return JSON.parse(req.body);
   } else {
     throw new Error('Unsuccessful request');
   }
 }
 
-
 (async () => {
   try {
-
-    // console.log(data);
-    // return;
 
     /**
     * Can request oAuthAccessToken and make use of pin flow
@@ -158,20 +153,20 @@ async function getRequest({
     // Get the access token
     oAuthAccessToken = await accessToken(oAuthRequestToken, pin.trim());
    }
+    
 
     // Make the request
     const response = await getRequest(oAuthAccessToken);
     console.dir(response, {
       depth: null
     });
+
   } catch (e) {
-    console.log(e.message);
+    console.log(e);
     process.exit(-1);
   }
   process.exit();
 })();
-
-
 /**
-node src/twitter-api-v2/postTweet.js
-*/
+node src/twitter-api-v2/getUsersByWithUserContext.js
+ */
