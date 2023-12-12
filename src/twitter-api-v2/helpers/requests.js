@@ -1,7 +1,7 @@
 import { oauth } from "./oauth.js";
 import got from "got";
 
-async function getAuthHeader (method, oAuthAccessToken, endpointURL) {
+function getAuthHeader (method, oAuthAccessToken, endpointURL) {
   const token = {
     key: oAuthAccessToken.oauth_token,
     secret: oAuthAccessToken.oauth_token_secret
@@ -16,6 +16,8 @@ async function getAuthHeader (method, oAuthAccessToken, endpointURL) {
 export async function getRequest(oAuthAccessToken, endpointURL) {
   const authHeader = getAuthHeader("GET", oAuthAccessToken, endpointURL);
 
+  // console.log(authHeader);
+  // return
   const req = await got(endpointURL, {
     headers: {
       Authorization: authHeader["Authorization"],
@@ -32,6 +34,9 @@ export async function getRequest(oAuthAccessToken, endpointURL) {
 
 export async function postRequest(oAuthAccessToken, endpointURL, data) {
   const authHeader = getAuthHeader("POST", oAuthAccessToken, endpointURL);
+
+  // console.log(endpointURL, data, authHeader);
+  // return;
 
   const req = await got.post(endpointURL, {
     json: data,
