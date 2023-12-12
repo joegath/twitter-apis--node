@@ -142,11 +142,10 @@ async function getRequest({
 (async () => {
   try {
 
-    // console.log(data);
-    // return;
-
     /**
     * Can request oAuthAccessToken and make use of pin flow
+    * or can use oAuthAccessToken that uses oauth_token and
+    * oauth_token_secret given in the developers account
     */
    if(SETTINGS.useRequestTokenPin) {
     // Get request token
