@@ -22,7 +22,7 @@ const endpointURL = `https://api.twitter.com/2/tweets`;
     try {
 
       if(SETTINGS.useRequestTokenPin) {
-        oAuthAccessToken = await getPinBasedOauthAccessToken()
+        oAuthAccessToken = await getPinBasedOauthAccessToken();
       }
   
       // Make the request

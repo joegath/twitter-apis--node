@@ -1,7 +1,14 @@
+import { getRandomText } from "./functions";
 
-export const getDetailedTweet = (args={}) => {
-    const defaultText = "Sample Tweet 🌟\n detail 1. \n detail 2. \n sample link: https://twitter.com";
-    const defaultHashtags = "#hashtag";
+const defaultText = `Sample random Tweet ${getRandomText()} 🌟\n detail 1: ${getRandomText()} \n detail 2: ${getRandomText()} \n sample link: https://twitter.com`;
+const defaultHashtags = `#hashtag${getRandomText()}`;
+const defaultTweetArgs = {
+    text: defaultText,
+    hashtags: defaultHashtags
+};
+
+
+export const getDetailedTweet = (args=defaultTweetArgs) => {
     const { text, hashtags} = args;
-    return `${text || defaultText} \n\n ${hashtags || defaultHashtags}`;
+    return `${text} \n\n ${hashtags}`;
 };
