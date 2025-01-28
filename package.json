@@ -1,5 +1,5 @@
 {
-  "name": "twitter-apis-with-node",
+  "name": "twitter-apis--node",
   "version": "1.0.0",
   "description": "testing twitter API",
   "main": "index.js",
@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "crypto": "^1.0.1",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.4.7",
     "got": "^14.0.0",
     "needle": "^3.2.0",
     "oauth-1.0a": "^2.2.6",
